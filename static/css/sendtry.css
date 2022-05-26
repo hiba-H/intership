@@ -1,0 +1,79 @@
+.box {
+   WIDTH :400PX;
+    height: 390PX;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) ;
+    box-shadow: 2PX 2PX 2PX 2PX;
+    padding: 30PX;
+   
+  }
+  label{
+    padding-bottom: 15PX;
+  }
+   
+  .box input[type="text"],
+  .box input[type="password"]
+ {
+  
+ 
+
+  font-size: 13px;
+  line-height: 2px;
+  
+  color: #294661;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 3px solid #d4dadf;
+  box-shadow: 0 1px 0 transparent;
+  transition: border-color .3s,box-shadow .3s;
+  
+}
+
+p,small{
+  padding-top: 20PX;
+  padding-bottom: 0px;
+  color: #546b81;
+}
+.box input[type="submit"] {
+  margin-bottom: 0PX;
+  margin-left: 280PX;
+
+  }
+  
+  .box input[type="submit"]:hover {
+    background: #80d7ff;
+    color: black;
+  }
+#uploadC #uploadT{
+  
+
+   
+    font-size: 14px;
+  
+
+    height: 200px;
+  
+}
+#uploadC input , #uploadT input {
+    display: inline-block;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 10px #eee;
+    border-radius: 4px;
+  }
+
+p{
+  margin-top: 10PX;
+}
+#form1{
+
+}

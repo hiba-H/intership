@@ -1,0 +1,43 @@
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/sendtry.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
+    <title>send</title>
+</head>
+<body>
+    <div class="box">
+    <form id="form1" method="POST" action="" >
+    <h4>It's important for your deliverability that everyone you send to has given you explicit permission to email them.</h4>
+    
+        <div id="uploadC">
+        <small> In case there's a unsubscriber accounts that you would like to drop from your contact base please upload it. And make sure your CSV is formatted correctly.</small>
+        <input id="upload" type="file"  value="upload" name="unsup" accept=".csv"/>
+        
+        
+    </div>
+
+<br>
+   <div id="uploadT">
+        <small> In case ther's new accounts that you would like to add to your contact base please upload it. And make sure your CSV is formatted correctly.</small>
+        <input id="upload" type="file"  value="upload" name="added" accept=".csv"/>
+        
+    </div>
+    <br>
+
+        <input type="submit" name="login" value="Send" class="btn btn-primary ">
+    </div>
+        
+
+</body>
+<script src="sendtry.js"></script>
+</html>
+</html>
+
+{% endblock content %}
