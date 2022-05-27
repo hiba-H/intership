@@ -1,6 +1,3 @@
-body{
-  background-color: #193e4a;
-}
 .box {
    WIDTH :400PX;
     height: 390PX;
@@ -12,7 +9,6 @@ body{
     padding: 30PX;
    
   }
- 
   label{
     padding-bottom: 15PX;
   }

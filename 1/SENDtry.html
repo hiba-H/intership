@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="sendtry.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
+    <title>Document</title>
+</head>
+<body>
+    <div class="box">
+    <form id="form1" method="POST">
+<p>It's important for your deliverability that everyone you send to has given you explicit permission to email them.</p>
+        <input type="text" name="subject" placeholder="the subject of your Email" required>
+
+        <div id="uploadC">
+        <p> make sure your CSV is formatted correctly.</p>
+        <input id="upload" type="file"  value="upload"/>
+        
+        
+    </div>
+    <div id="uploadT">
+        <p> make sure your html is formatted correctly.</p>
+        <input id="upload" type="file"value="file" oninput="add_file_name(),this.value = null;" required/>
+     
+    </div>
+        <input type="submit" name="login" value="Send" class="btn btn-primary ">
+    </div>
+        
+
+</body>
+<script src="sendtry.js"></script>
+</html>

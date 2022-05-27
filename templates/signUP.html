@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Admin</title>
+    <link rel="stylesheet" href="/static/css/signUP.css">
+    <!-- <link href='https://unpkg.com/boxicons@2.0.8/css/boxicons.min.css' rel='stylesheet'> -->
+</head>
+<body class = 'simple-linear'>
+    <header>
+        <br>
+        <center>
+       <a href= "/"> <img src="/static/images/logo.jpeg" height="150px" border-radius="5px"  >add their logo</a>
+    </center>
+    </header>
+    <div class="box">
+        
+
+    <div id="welcom">
+        
+        <div id="title"><strong>Create your account now ! </strong> <br></div>
+        For sending comartial Emails to your clients in a very proper and fastest way by one click, not just that but also having allthe related informations collected in one place and your data in one database safe and sound . all u should do is SignUp for free and enjoy all our offers.  
+        <br> <br> <br> <br> <br> <br>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for cat, msg in messages%}
+                <center><small class = "alert {{ cat }}" style="color: white ;padding-left: 72PX; PADDING-RIGHT: 72PX; PADDING-TOP: 20PX; padding-bottom: 20PX;">{{msg}}</small></center>
+            {% endfor%}
+        {% endif %}
+    {% endwith %}
+    </div>
+    
+    <form id="form1" method="POST">
+    <h1>SignUp </h1>
+    <input type="text" name="username" placeholder="USERNMAE" required>
+    <input type="text" name="email" placeholder="EMAIL" required><small style="color: rgb(116, 116, 116);">*all your contact will get their emails from this email address</small>
+
+    <input type="password" name="password" placeholder="PASSWORD" required>
+    <input type="submit" name="signup" value="SignUp">
+       
+</form>
+</div>
+
+</body>
+
+</html>

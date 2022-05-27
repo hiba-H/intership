@@ -59,6 +59,7 @@ encrypted = f.encrypt(message)
 print(encrypted)
 decrypted_encrypted = f.decrypt(encrypted)
 print(decrypted_encrypted)
+"""
 sqliteConnection = sqlite3.connect('Data.db')
 cursor = sqliteConnection.cursor() 
 print("Connected to SQLite")
@@ -81,41 +82,4 @@ for i in range(len(project)):
     proj_sender_username.append(sender[0][0])
     proj_date.append(project[i][2])
     proj_status.append(project[i][4])
-print(proj_sender_email,proj_name,proj_status,proj_date,proj_sender_username )"""
-sqliteConnection = sqlite3.connect('Data.db')
-cursor = sqliteConnection.cursor() 
-print("Connected to SQLite")
-
-#username = request.form['username']
-#email = request.form['email']
-#password = request.form['password']
-
-"SELECT username, password, email FROM sender;"
-sender = cursor.execute("SELECT * FROM sender;").fetchall()
-contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
-contact_email = []
-contact_name = []
-
-authors_email = []
-authors_username = []
-contact = {'contact_email':[],'contact_name':[] }
-author = {'author_email':[],'author_username':[] }
-
-
-#print(contacts)
-for i in range(len(contacts)):
-    contact["contact_email"].append( contacts[i][1])
-    contact["contact_name"].append( contacts[i][0])
-authi =[]
-for i in range(len(sender)):
-    author["author_username"].append( sender[i][0])
-    author["author_email"].append( sender[i][2])
-    authi.append(i)
-
-print("author",authi)
-for i in range(len(sender)):
-
-    print(author['author_username'][i])
-
-
-
+print(proj_sender_email,proj_name,proj_status,proj_date,proj_sender_username )

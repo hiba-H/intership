@@ -11,6 +11,8 @@ import smtplib
 import smtplib,email,email.encoders,email.mime.text,email.mime.base
 from email.message import EmailMessage
 from sqlite3 import Date
+from cv2 import error
+from flask import Markup
 import pandas as pd 
 from email.mime.text import MIMEText
 
@@ -107,7 +109,20 @@ def login():
 class NotificationsView(BaseView):
     @expose('/')
     def index(self):
-        return self.render('admin/dashboard2.html')
+        if 'username' in session :
+            if request.method == 'GET':
+                sqliteConnection = sqlite3.connect('Data.db')
+                cursor = sqliteConnection.cursor() 
+                print("Connected to SQLite") 
+                #total pRoject -contact-contactdeleted   
+
+
+
+            return self.render('admin/dashboard2.html')
+        return redirect(url_for('signIN'))
+     
+
+
 admin.add_view(NotificationsView(name='home', endpoint='home'))
 
 
@@ -128,14 +143,88 @@ def signIN():
                     username = admin_Info[i][0]
                     session['username'] =username
                     print(i)
-                    #return render_template('dashboard2.html',username =username , failed=True)
-                    #return self.render('admin/dashboard2.html')
-                    return redirect(url_for('home.index',username = username))
+                    sender = cursor.execute("SELECT * FROM sender;").fetchall()
+                    project = cursor.execute("SELECT * FROM project;").fetchall()
+                    contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
+                    print('11111111111111111111111111')
+                    print(sender ,len(contacts))
+                    date = []
+                    for i in range(len(project)):
+                        print(project[i][2])
+                        date.append(project[i][2])
+                    print(date)
+                    #sender = cursor.execute("SELECT * FROM sender;").fetchall()
+                    #contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
+                    contact = {'contact_email':[],'contact_name':[] }
+                    author = {'author_email':[],'author_username':[] }
+                    contact_num =[]
+                    author_num = []
+
+                    print(contacts)
+                    for i in range(len(contacts)):
+                        contact["contact_email"].append( contacts[i][1])
+                        contact["contact_name"].append( contacts[i][0])
+                      
+
+                    for i in range(len(sender)):
+                        author["author_username"].append( sender[i][0])
+                        author["author_email"].append( sender[i][2])
+                        
+
+
+               
+                        #return render_template('dashboard2.html',username =username , failed=True)
+                        #return self.render('admin/dashboard2.html')
+                        return redirect(url_for('home.index',username = username,senders = len(sender) , project = len(project) , contact = len(contacts) ,author_num=[author_num], contact_num=contact_num,date = date , contacts = [contact] , author = [author]))
             else:
                    render_template("login.html")
             
 
     return render_template("login.html")
+
+@app.route("/signUP", methods=["GET", "POST"])
+def signUP():
+    try :
+    # print(session.pop("username",None))
+    # print(session["username"])
+        if request.method == 'POST':
+             sqliteConnection = sqlite3.connect('Data.db')
+             cursor = sqliteConnection.cursor() 
+             print("Connected to SQLite")
+             username = request.form['username']
+             email = request.form['email']
+             password = request.form['password']
+             "SELECT username, password, email FROM sender;"
+             #sender = cursor.execute("SELECT * FROM sender;").fetchall()
+
+            
+             cursor.execute("INSERT INTO sender (username, password, email)VALUES ('{}','{}','{}');".format(username,password,email))
+             sqliteConnection.commit()
+             print("added")
+             flash(Markup("the sign up was successful! click '' <a href='/signIN'>here </a> '' to sign in "), category='success')
+
+             cursor.close()
+
+             return render_template("signUP.html")
+        return render_template("signUP.html")
+
+    except sqlite3.IntegrityError as e:
+        print(e ,e.args[0] == 'UNIQUE constraint failed: sender.email')
+        if e.args[0] == 'UNIQUE constraint failed: sender.email':
+            flash("*The email excists already", category='error')
+            return render_template("signUP.html")
+        elif  e.args[0] == 'UNIQUE constraint failed: sender.username':
+            flash("*The username excists already", category='error')
+            return render_template("signUP.html")
+        else : 
+            return render_template("signUP.html")
+            
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    #return render_template("login.html")
+    return redirect(url_for('signIN'))
+
+    
 
 
 """""
@@ -147,35 +236,37 @@ def index(request):
 class sendView(BaseView):
     @expose('/', methods=["GET", "POST"])
     def contact(self):
+        if 'username' in session :
+            if request.method == 'POST':
+                sqliteConnection = sqlite3.connect('Data.db')
+                cursor = sqliteConnection.cursor() 
+                print("Connected to SQLite")
+                ####CONTACT ADDing  :/ 
+                contact_add = request.form['added']
+                contact_drop = request.form['unsup']
 
-        if request.method == 'POST':
-            sqliteConnection = sqlite3.connect('Data.db')
-            cursor = sqliteConnection.cursor() 
-            print("Connected to SQLite")
-            ####CONTACT ADDing  :/ 
-            contact_add = request.form['added']
-            contact_drop = request.form['unsup']
+                if  request.form ["added" ] != '':
 
-            if  request.form ["added" ] != '':
-                
-                contact_file2 = pd.read_csv(request.form["added"])
-                for i in range(len(contact_file2)):
-                    cursor.execute("INSERT INTO contacts (`contact-name`, email)VALUES ('{}','{}');".format(contact_file2['NAME'][i],contact_file2['EMAILS'][i]))
-                    sqliteConnection.commit()
-                print("added")
-            elif request.form["unsup" ] != '':
-                
-                contact_file2 = pd.read_csv(request.form["unsup"])
-                for i in range(len(contact_file2)):
-                    cursor.execute("DELETE FROM contacts WHERE email='{}';".format(contact_file2['EMAILS'][i]))
-                    sqliteConnection.commit()
-                print("dropped")
-            cursor.close()
-            ####end CONTACT ADDing  :]
-            
-            
-            return redirect(url_for('send.send'))
-        return self.render('admin/contact.html')
+                    contact_file2 = pd.read_csv(request.form["added"])
+                    for i in range(len(contact_file2)):
+                        cursor.execute("INSERT INTO contacts (`contact-name`, email)VALUES ('{}','{}');".format(contact_file2['NAME'][i],contact_file2['EMAILS'][i]))
+                        sqliteConnection.commit()
+                    print("added")
+                elif request.form["unsup" ] != '':
+
+                    contact_file2 = pd.read_csv(request.form["unsup"])
+                    for i in range(len(contact_file2)):
+                        cursor.execute("DELETE FROM contacts WHERE email='{}';".format(contact_file2['EMAILS'][i]))
+                        sqliteConnection.commit()
+                    print("dropped")
+                cursor.close()
+                ####end CONTACT ADDing  :]
+
+
+                return redirect(url_for('send.send'))
+            return self.render('admin/contact.html')
+        return redirect(url_for('signIN'))
+
     @expose('/send', methods=["GET", "POST"])
 
     def send(self):
@@ -282,53 +373,77 @@ class sendView(BaseView):
                 return redirect(url_for('sends.sends'))
 
             return self.render('admin/send.html')
-        return render_template("login.html")
+        return redirect(url_for('signIN'))
+
     
 admin.add_view(sendView(name='send', endpoint='send'))
 
 class sendsView(BaseView):
     #@app.route('/sends', methods=["GET", "POST"])
+
     @expose('/',methods=["GET", "POST"])
     @expose('/sends',methods=["GET", "POST"])
     def sends(self):
-        if request.method == 'GET':
-            sqliteConnection = sqlite3.connect('Data.db')
-            cursor = sqliteConnection.cursor() 
-            print("Connected to SQLite")
-            content_tab = cursor.execute("SELECT * FROM content;").fetchall()
-            print(content_tab[0])
-            decoded = str(content_tab[0]).encode('latin1')
-            print(content_tab[0])
+        if 'username'  in session :
+            if request.method == 'GET':
+                sqliteConnection = sqlite3.connect('Data.db')
+                cursor = sqliteConnection.cursor() 
+                print("Connected to SQLite")
+                content_tab = cursor.execute("SELECT * FROM content;").fetchall()
+                print(content_tab[0])
+                decoded = str(content_tab[0]).encode('latin1')
+                print(content_tab[0])
 
-            sender = cursor.execute("SELECT * FROM sender;").fetchall()
-            project = cursor.execute("SELECT * FROM project;").fetchall()
-            content = cursor.execute("SELECT * FROM content;").fetchall()
-            proj_name = []
-            proj_sender_email = []
-            proj_sender_username = []
-            proj_date = []
-            proj_status = []
-            proj_num = []
-            for i in range(len(project)):
-                proj_num.append(i)
-                proj_name.append(project[i][1])
-                #proj_sender_username.append(project[i][1])
-                proj_sender_email.append(project[i][3])
-                sender = cursor.execute("SELECT username FROM sender where email = '{}';".format(proj_sender_email[i])).fetchall()
-                proj_sender_username.append(sender[0][0])
-                proj_date.append(project[i][2])
-                proj_status.append(project[i][4])
-            print(proj_sender_email,proj_name,proj_status,proj_date)
-            file = "NEWSLETTER"
+                sender = cursor.execute("SELECT * FROM sender;").fetchall()
+                project = cursor.execute("SELECT * FROM project;").fetchall()
+                content = cursor.execute("SELECT * FROM content;").fetchall()
+                proj_name = []
+                proj_sender_email = []
+                proj_sender_username = []
+                proj_date = []
+                proj_status = []
+                proj_num = []
+                for i in range(len(project)):
+                    proj_num.append(i)
+                    proj_name.append(project[i][1])
+                    #proj_sender_username.append(project[i][1])
+                    proj_sender_email.append(project[i][3])
+                    sender = cursor.execute("SELECT username FROM sender where email = '{}';".format(proj_sender_email[i])).fetchall()
+                    proj_sender_username.append(sender[0][0])
+                    proj_date.append(project[i][2])
+                    proj_status.append(project[i][4])
+                print(proj_sender_email,proj_name,proj_status,proj_date)
+                file = "NEWSLETTER"
+            elif request.method =='POST':
+                    sqliteConnection = sqlite3.connect('Data.db')
+                    cursor = sqliteConnection.cursor() 
+                    print("Connected to SQLite")
+                    sender = cursor.execute("SELECT * FROM sender;").fetchall()
+                    project = cursor.execute("SELECT * FROM project;").fetchall()
+                    contact = cursor.execute("SELECT * FROM contacts;").fetchall()
+                    print('11111111111111111111111111')
+                    print(sender ,len(contact))
+                    date = []
+                    for i in range(len(project)):
+                        print(project[i][2])
+                        date.append(project[i][2])
+                    print(date)
+
+                    return redirect(url_for('home.index',senders = len(sender) , project = len(project) , contact = len(contact) , date = date))
 
 
 
-        
-        return self.render('admin/sends.html', proj_num =  proj_num,proj_sender_username=proj_sender_username ,proj_sender_email=proj_sender_email,proj_name=proj_name,proj_status=proj_status,proj_date=proj_date , file = file)
+
+            return self.render('admin/sends.html', proj_num =  proj_num,proj_sender_username=proj_sender_username ,proj_sender_email=proj_sender_email,proj_name=proj_name,proj_status=proj_status,proj_date=proj_date , file = file)
+        return self.render('signIN')
+
     @expose('/sends/preview',methods=["GET", "POST"])
     def file(self):
-        file = request.args.get("file")
-        return self.render(file)
+        if 'username'  in session :    
+            file = request.args.get("file")
+            return self.render(file)
+        return redirect(url_for('signIN'))
+
 admin.add_view(sendsView(name='sends', endpoint='sends'))
 
 #@app.route('/pixelwithinfo.gif')
