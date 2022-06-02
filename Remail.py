@@ -128,60 +128,69 @@ admin.add_view(NotificationsView(name='home', endpoint='home'))
 
 @app.route("/signIN", methods=["GET", "POST"])
 def signIN():
+    try:
+        print(session.pop("username",None))
+   #     print(session["username"])
+        if request.method == 'POST':
+            sqliteConnection = sqlite3.connect('Data.db')
+            cursor = sqliteConnection.cursor() 
+            print("Connected to SQLite")
+            admin_Info = cursor.execute("SELECT * FROM sender;").fetchall()
+            print(admin_Info)
+            a = bool
+            for i in range(len(admin_Info)):
+                a == True
+                if request.form.get('username') == admin_Info[i][0] and request.form.get('password') == admin_Info[i][1] :
+                        session['logged_in'] = True
+                        username = admin_Info[i][0]
+                        session['username'] =username
+                        print(i)
+                        sender = cursor.execute("SELECT * FROM sender;").fetchall()
+                        project = cursor.execute("SELECT * FROM project;").fetchall()
+                        contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
+                        print('11111111111111111111111111')
+                        print(sender ,len(contacts))
+                        date = []
+                        for i in range(len(project)):
+                            print(project[i][2])
+                            date.append(project[i][2])
+                        print(date)
+                        #sender = cursor.execute("SELECT * FROM sender;").fetchall()
+                        #contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
+                        contact = {'contact_email':[],'contact_name':[] }
+                        author = {'author_email':[],'author_username':[] }
+                        contact_num =[]
+                        author_num = []
 
-    print(session.pop("username",None))
-   # print(session["username"])
-    if request.method == 'POST':
-        sqliteConnection = sqlite3.connect('Data.db')
-        cursor = sqliteConnection.cursor() 
-        print("Connected to SQLite")
-        admin_Info = cursor.execute("SELECT * FROM sender;").fetchall()
-        print(admin_Info)
-        for i in range(len(admin_Info)):
-            if request.form.get('username') == admin_Info[i][0] and request.form.get('password') == admin_Info[i][1] :
-                    session['logged_in'] = True
-                    username = admin_Info[i][0]
-                    session['username'] =username
-                    print(i)
-                    sender = cursor.execute("SELECT * FROM sender;").fetchall()
-                    project = cursor.execute("SELECT * FROM project;").fetchall()
-                    contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
-                    print('11111111111111111111111111')
-                    print(sender ,len(contacts))
-                    date = []
-                    for i in range(len(project)):
-                        print(project[i][2])
-                        date.append(project[i][2])
-                    print(date)
-                    #sender = cursor.execute("SELECT * FROM sender;").fetchall()
-                    #contacts = cursor.execute("SELECT * FROM contacts;").fetchall()
-                    contact = {'contact_email':[],'contact_name':[] }
-                    author = {'author_email':[],'author_username':[] }
-                    contact_num =[]
-                    author_num = []
-
-                    print(contacts)
-                    for i in range(len(contacts)):
-                        contact["contact_email"].append( contacts[i][1])
-                        contact["contact_name"].append( contacts[i][0])
-                      
-
-                    for i in range(len(sender)):
-                        author["author_username"].append( sender[i][0])
-                        author["author_email"].append( sender[i][2])
-                        
+                        print(contacts)
+                        for i in range(len(contacts)):
+                            contact["contact_email"].append( contacts[i][1])
+                            contact["contact_name"].append( contacts[i][0])
 
 
-               
-                        #return render_template('dashboard2.html',username =username , failed=True)
-                        #return self.render('admin/dashboard2.html')
-                        return redirect(url_for('home.index',username = username,senders = len(sender) , project = len(project) , contact = len(contacts) ,author_num=[author_num], contact_num=contact_num,date = date , contacts = [contact] , author = [author]))
-            else:
-                   render_template("login.html")
+                        for i in range(len(sender)):
+                            author["author_username"].append( sender[i][0])
+                            author["author_email"].append( sender[i][2])
+
+
+
+
+                            #return render_template('dashboard2.html',username =username , failed=True)
+                            #return self.render('admin/dashboard2.html')
+                            return redirect(url_for('home.index',username = username,senders = len(sender) , project = len(project) , contact = len(contacts) ,author_num=[author_num], contact_num=contact_num,date = date , contacts = [contact] , author = [author]))
+                else:
+                    print('nada')
+                    a == False
+            if a != True :
+                raise Exception("username is incorrect")
+
             
-
-    return render_template("login.html")
-
+        
+        return render_template("login.html")
+    except Exception :
+            flash(Markup("*login failed Try again later or <a href='/signUP'>signUP </a> ."), category='error')
+            return render_template("login.html")
+        
 @app.route("/signUP", methods=["GET", "POST"])
 def signUP():
     try :

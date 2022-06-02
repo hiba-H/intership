@@ -13,7 +13,6 @@ body {
 #welcom{
   
   MARGIN: 120px;
-  padding-right: 150px;
     text-align: left;
     color: rgb(116, 116, 116);
 }
@@ -96,4 +95,21 @@ body {
     bottom: 10%;
     cursor: pointer;
   }
+  .alert.success {
+    background-color: rgb(98, 165, 98);
+    display: flex;
+    POSITION: absolute;
+  }
+  
+  .alert.error {
+    background-color: rgb(206, 107, 107);
+  }
+  a{
+    text-decoration: none;
+    color: white;
+}
+a:hover{
+    color: rgb(116, 116, 116);
+    
+}
   
